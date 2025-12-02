@@ -6,7 +6,7 @@ from dataset.dataset import SingleImageDataset, DirectionDataset
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
 from torchvision import transforms
-from PIL import Image
+from PIL import Image, ImageOps
 from ailutmodel import AiLUT
 from adaptation import AdaptationModule
 from criteria import CLIPLoss
@@ -38,7 +38,9 @@ def main():
     args = parser.parse_args()
     # DataLoader
     if args.image_path:
-        lq = Image.open(args.image_path).convert('RGB')
+        lq = Image.open(args.image_path)
+        lq = ImageOps.exif_transpose(lq)
+        lq = lq.convert('RGB')
         transform = transforms.ToTensor()
         lq = transform(lq).unsqueeze(0)
         file_name = os.path.basename(args.image_path)
