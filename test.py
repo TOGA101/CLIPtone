@@ -5,6 +5,8 @@ import os
 from dataset.dataset import SingleImageDataset, DirectionDataset
 from torch.utils.data import DataLoader
 from torchvision.utils import save_image
+from torchvision import transforms
+from PIL import Image
 from ailutmodel import AiLUT
 from adaptation import AdaptationModule
 from criteria import CLIPLoss
@@ -12,6 +14,7 @@ from criteria import CLIPLoss
 def main():
     parser = argparse.ArgumentParser()
     
+    parser.add_argument('--image_path', type=str, default=None)
     parser.add_argument('--backbone', type=str, default='tpami')
     parser.add_argument('--backbone_checkpoint_dir', type=str, default='./checkpoint/base_network')
     parser.add_argument('--backbone_checkpoint_name', type=str, default='AiLUT-FiveK-sRGB.pth')
@@ -34,8 +37,15 @@ def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     args = parser.parse_args()
     # DataLoader
-    valid_dataset = SingleImageDataset(args.dataset_dir, '/data/FiveK/test.txt', aug=False)
-    valid_loader = DataLoader(valid_dataset, batch_size=args.batch_size, shuffle=True)
+    if args.image_path:
+        lq = Image.open(args.image_path).convert('RGB')
+        transform = transforms.ToTensor()
+        lq = transform(lq).unsqueeze(0)
+        file_name = os.path.basename(args.image_path)
+        valid_loader = [(lq, [file_name])]
+    else:
+        valid_dataset = SingleImageDataset(args.dataset_dir, '/data/FiveK/test.txt', aug=False)
+        valid_loader = DataLoader(valid_dataset, batch_size=args.batch_size, shuffle=True)
     
     CLIPloss = CLIPLoss(device, clip_model = 'RN50')
     
