@@ -6,7 +6,7 @@ from torchvision.utils import save_image
 from ailutmodel import AiLUT
 from adaptation import AdaptationModule
 from criteria import CLIPLoss
-from PIL import Image
+from PIL import Image, ImageOps
 from torchvision import transforms
 
 def main():
@@ -42,6 +42,7 @@ def main():
         img.save(args.input_image)
 
     lq = Image.open(args.input_image).convert('RGB')
+    lq = ImageOps.exif_transpose(lq)
     transform = transforms.ToTensor()
     lq = transform(lq).unsqueeze(0).to(device)
 
