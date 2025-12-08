@@ -1,7 +1,7 @@
 import os
 import os.path as osp
 from setuptools import setup, find_packages
-from torch.utils.cpp_extension import BuildExtension, CUDAExtension
+from torch.utils.cpp_extension import BuildExtension, CppExtension
 
 
 def get_version(version_file):
@@ -21,10 +21,9 @@ setup(
     packages=find_packages(),
     include_package_data=False,
     ext_modules=[
-        CUDAExtension('ailut._ext', [
+        CppExtension('ailut._ext', [
             osp.join(csrc_directory, 'ailut_transform.cpp'),
-            osp.join(csrc_directory, 'ailut_transform_cpu.cpp'),
-            osp.join(csrc_directory, 'ailut_transform_cuda.cu')
+            osp.join(csrc_directory, 'ailut_transform_cpu.cpp')
         ])
     ],
     cmdclass={

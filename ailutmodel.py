@@ -316,7 +316,7 @@ class AiLUT(nn.Module):
         if self.en_adaint:
             vertices = self.adaint(codes, adaint_weights_delta)
         else:
-            vertices = self.uniform_vertices.unsqueeze(0).to('cuda')
+            vertices = self.uniform_vertices.unsqueeze(0).to(lq.device)
             
         outs = ailut_transform(lq, luts, vertices)
         outs = torch.clamp(outs, 0, 1)
