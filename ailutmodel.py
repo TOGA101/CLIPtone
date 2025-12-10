@@ -7,7 +7,7 @@ import torch.nn.functional as F
 import torchvision
 
 
-from ailut import ailut_transform
+# from ailut import ailut_transform
 
 
 class BasicBlock(nn.Sequential):
@@ -20,7 +20,9 @@ class BasicBlock(nn.Sequential):
             nn.LeakyReLU(0.2)
         ]
         if norm:
-            body.append(nn.InstanceNorm2d(out_channels, affine=True))
+            # Use BatchNorm2d with track_running_stats=False.
+            # For batch_size=1, this is equivalent to InstanceNorm2d but might use different kernel.
+            body.append(nn.BatchNorm2d(out_channels, affine=True, track_running_stats=False))
         super(BasicBlock, self).__init__(*body)
 
 
@@ -46,7 +48,11 @@ class TPAMIBackbone(nn.Sequential):
             nn.Dropout(p=0.5),
         ]
         if extra_pooling:
-            body.append(nn.AdaptiveAvgPool2d(2))
+            # Replace AdaptiveAvgPool2d(2) with AvgPool2d
+            # The input size to this backbone is fixed to (input_resolution, input_resolution) e.g. 256x256
+            # The output before this pooling is 8x8 (stride 2^5 = 32). 256/32 = 8.
+            # To get 2x2 from 8x8, we need kernel size 4 and stride 4.
+            body.append(nn.AvgPool2d(kernel_size=4, stride=4))
         super().__init__(*body)
         self.input_resolution = input_resolution
         self.out_channels = 128 * (4 if extra_pooling else 64)
