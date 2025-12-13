@@ -24,11 +24,11 @@ This is a simplified CPU-only implementation of [CLIPtone](https://github.com/hm
    ```
 
    **Text Adapter:**
-   Download `best_model.pt` and place it in `checkpoint/text_adaptor/RN50/` (or any path, specify in arguments).
+   Download `pretrained.pth` and place it in `checkpoint/text_adaptor/RN50/` (or any path, specify in arguments).
    You can use `gdown` (installed via requirements) to download from Google Drive.
    ```bash
    mkdir -p checkpoint/text_adaptor/RN50/
-   gdown -O checkpoint/text_adaptor/RN50/best_model.pt https://drive.google.com/uc?id=171NTXGgme8AmSJJyy1F4hEE3OnRBQuql
+   gdown -O checkpoint/text_adaptor/RN50/pretrained.pth https://drive.google.com/uc?id=171NTXGgme8AmSJJyy1F4hEE3OnRBQuql
    ```
 
 ## Usage
@@ -36,7 +36,7 @@ This is a simplified CPU-only implementation of [CLIPtone](https://github.com/hm
 Run the inference script on a single image.
 
 ```bash
-python inference_cpu.py --input test.jpg --output output.png --prompt "A vibrant and bright photo"
+python inference_cpu.py --input test.jpg --output output.png --prompt "A vibrant and bright"
 ```
 
 ### Arguments

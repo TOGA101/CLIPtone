@@ -19,10 +19,10 @@ def main():
     parser = argparse.ArgumentParser(description="CPU Inference for CLIPtone")
     parser.add_argument('--input', type=str, default='test.jpg', help='Path to input image')
     parser.add_argument('--output', type=str, default='output.png', help='Path to save output image')
-    parser.add_argument('--prompt', type=str, default='Normal photo.', help='Target text description')
+    parser.add_argument('--prompt', type=str, default='Normal', help='Target text description')
     parser.add_argument('--intensity', type=float, default=1.0, help='Intensity of the effect')
     parser.add_argument('--base_checkpoint', type=str, default='checkpoint/base_network/AiLUT-FiveK-sRGB.pth')
-    parser.add_argument('--adaptor_checkpoint', type=str, default='/tmp/best_model.pt')
+    parser.add_argument('--adaptor_checkpoint', type=str, default='checkpoint/text_adaptor/RN50/pretrained.pth')
 
     args = parser.parse_args()
 
@@ -43,7 +43,7 @@ def main():
 
     # Compute Text Direction
     source_text = "Normal photo."
-    target_text = args.prompt
+    target_text = args.prompt + ' photo.'
     print(f"Computing direction from '{source_text}' to '{target_text}'...")
 
     source_features = get_text_features(source_text)
@@ -57,14 +57,8 @@ def main():
     model = AiLUT(n_ranks=3, n_vertices=33, backbone='tpami', pretrained=False)
 
     # Load weights
-    if os.path.exists(args.base_checkpoint):
-        checkpoint = torch.load(args.base_checkpoint, map_location=device)
-        if 'state_dict' in checkpoint:
-            model.load_state_dict(checkpoint['state_dict'])
-        else:
-            model.load_state_dict(checkpoint)
-    else:
-        print(f"Warning: Base checkpoint {args.base_checkpoint} not found. Using random initialization.")
+    checkpoint = torch.load(args.base_checkpoint, map_location=device)
+    model.load_state_dict(checkpoint['state_dict'])
 
     model.to(device)
     model.eval()
@@ -74,20 +68,7 @@ def main():
     # Feature dim for RN50 is 1024. Backbone out channels (n_feats) is 512 for TPAMI.
     adaptor = AdaptationModule(n_ranks=3, n_vertices=33, n_colors=3, feature_dim=1024, n_feats=512)
 
-    if os.path.exists(args.adaptor_checkpoint):
-        checkpoint = torch.load(args.adaptor_checkpoint, map_location=device)
-        # Check if state dict
-        if isinstance(checkpoint, dict) and 'state_dict' in checkpoint:
-            adaptor.load_state_dict(checkpoint['state_dict'])
-        else:
-            adaptor.load_state_dict(checkpoint)
-    else:
-        print(f"Warning: Adaptor checkpoint {args.adaptor_checkpoint} not found. Using random initialization.")
-        # Try checking in original location just in case
-        alt_path = 'checkpoint/text_adaptor/RN50/best_model.pt'
-        if os.path.exists(alt_path):
-            print(f"Found adaptor at {alt_path}")
-            adaptor.load_state_dict(torch.load(alt_path, map_location=device))
+    adaptor.load_state_dict(torch.load(args.adaptor_checkpoint, map_location=device))
 
     adaptor.to(device)
     adaptor.eval()
