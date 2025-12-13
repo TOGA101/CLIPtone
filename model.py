@@ -82,9 +82,11 @@ def ailut_transform(img, luts, vertices):
     # So we need to stack (B_coords, G_coords, R_coords).
 
     # norm_img is (B, 3, N) -> (R, G, B) order.
-    # grid should be (B, 1, 1, N, 3) with (B, G, R) order.
+    # grid should be (B, 1, 1, N, 3) with (R, G, B) order.
+    # grid_sample (x, y, z) maps to (W, H, D) -> (Red, Green, Blue) of the LUT tensor.
+    # So we need to provide coordinates as (Red, Green, Blue).
 
-    grid = torch.stack([norm_img[:, 2, :], norm_img[:, 1, :], norm_img[:, 0, :]], dim=-1) # (B, N, 3)
+    grid = norm_img.permute(0, 2, 1) # (B, N, 3) -> (R, G, B)
     grid = grid.view(B, 1, 1, -1, 3) # (B, 1, 1, N, 3)
 
     # 3. Sample
