@@ -36,14 +36,14 @@ This is a simplified CPU-only implementation of [CLIPtone](https://github.com/hm
 Run the inference script on a single image.
 
 ```bash
-python inference_cpu.py --input test.jpg --output output.png --prompt "A vibrant and bright"
+python inference_cpu.py --input test.jpg --output output.png --prompt "Cyberpunk"
 ```
 
 ### Arguments
 
 - `--input`: Path to input image (default: `test.jpg`).
 - `--output`: Path to save output image (default: `output.png`).
-- `--prompt`: Target text description (default: `Normal photo.`).
+- `--prompt`: Target text description (default: `Normal`).
 - `--intensity`: Intensity of the effect (default: `1.0`).
 - `--base_checkpoint`: Path to base AiLUT checkpoint.
 - `--adaptor_checkpoint`: Path to text adapter checkpoint.
