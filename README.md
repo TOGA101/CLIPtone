@@ -31,6 +31,13 @@ This is a simplified CPU-only implementation of [CLIPtone](https://github.com/hm
    gdown -O checkpoint/text_adaptor/RN50/pretrained.pth https://drive.google.com/uc?id=171NTXGgme8AmSJJyy1F4hEE3OnRBQuql
    ```
 
+   **CLIP Model (RN50):**
+   Download `RN50.pt` and place it in `checkpoint/clip/`.
+   ```bash
+   mkdir -p checkpoint/clip/
+   wget -O checkpoint/clip/RN50.pt https://openaipublic.azureedge.net/clip/models/afeb0e10f9e5a86da6080e35cf09123aca3b358a0c3e3b6c78a7b63bc04b6762/RN50.pt
+   ```
+
 ## Usage
 
 Run the inference script on a single image.

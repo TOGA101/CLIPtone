@@ -24,6 +24,7 @@ def main():
     parser.add_argument('--intensity', type=float, default=1.0, help='Intensity of the effect')
     parser.add_argument('--base_checkpoint', type=str, default='checkpoint/base_network/AiLUT-FiveK-sRGB.pth')
     parser.add_argument('--adaptor_checkpoint', type=str, default='checkpoint/text_adaptor/RN50/pretrained.pth')
+    parser.add_argument('--clip_checkpoint', type=str, default='checkpoint/clip/RN50.pt', help='Path to CLIP model checkpoint')
 
     args = parser.parse_args()
 
@@ -33,7 +34,7 @@ def main():
     # 1. Load CLIP Model (for text direction)
     print("Loading CLIP model...")
     # Using RN50 as per original repo
-    clip_model, clip_preprocess = clip.load("RN50", device=device)
+    clip_model, clip_preprocess = clip.load(args.clip_checkpoint, device=device)
 
     def get_text_features(text):
         tokens = clip.tokenize([text]).to(device)
