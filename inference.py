@@ -1,12 +1,13 @@
-import os
-import torch
-import clip
-from PIL import Image, ImageOps
-from torchvision.utils import save_image
-from torchvision.transforms import ToTensor
 import argparse
 
+import clip
+import torch
+from PIL import Image, ImageOps
+from torchvision.transforms import ToTensor
+from torchvision.utils import save_image
+
 from model import AiLUT, AdaptationModule
+
 
 def load_image(path):
     # Load image and handle EXIF orientation
@@ -54,7 +55,7 @@ def main():
     # 2. Load AiLUT Model
     print("Loading AiLUT model...")
     # Params match original args defaults: n_ranks=3, n_vertices=33, backbone='tpami'
-    model = AiLUT(n_ranks=3, n_vertices=33, backbone='tpami', pretrained=False)
+    model = AiLUT(n_ranks=3, n_vertices=33)
 
     # Load weights
     checkpoint = torch.load(args.base_checkpoint, map_location=device)

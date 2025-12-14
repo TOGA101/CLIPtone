@@ -36,7 +36,7 @@ This is a simplified CPU-only implementation of [CLIPtone](https://github.com/hm
 Run the inference script on a single image.
 
 ```bash
-python inference_cpu.py --input test.jpg --output output.png --prompt "Cyberpunk"
+python inference.py --input test.jpg --output output.png --prompt "Cyberpunk"
 ```
 
 ### Arguments
