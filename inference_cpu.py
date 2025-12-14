@@ -54,7 +54,7 @@ def main():
     # 2. Load AiLUT Model
     print("Loading AiLUT model...")
     # Params match original args defaults: n_ranks=3, n_vertices=33, backbone='tpami'
-    model = AiLUT(n_ranks=3, n_vertices=33, backbone='tpami', pretrained=False)
+    model = AiLUT(n_ranks=3, n_vertices=33)
 
     # Load weights
     checkpoint = torch.load(args.base_checkpoint, map_location=device)
